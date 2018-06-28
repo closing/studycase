@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+	<h2>JavaScript 创建 JSON 对象</h2>
+	<p>
+		网站名称: <span id="jname"></span><br /> 网站地址: <span id="jurl"></span><br />
+		网站 slogan: <span id="jslogan"></span><br />
+	</p>
+	<div id="searchengine"></div>
+	<button type="button" onclick="loadJSON()">Load Json</button>
+	<script>
+		function loadJSON() {
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					var jsonObj = JSON.parse(xmlhttp.responseText, function(
+							key, value) {
+						if (key == "birthday") {
+							return new Date(value);
+						} else {
+							return value;
+						}
+					});
+					var search = document.getElementById("searchengine");
+					var innerHtml = search.innerHTML;
+					for (var i = 0; i < jsonObj.length; i++) {
+						innerHtml = innerHtml
+								+ "<a href='" + jsonObj[i].url + "'>"
+								+ jsonObj[i].name + "</a><br>";
+					}
+					search.innerHTML = innerHtml;
+				}
+			};
+			xmlhttp.open("GET", "/search.txt");
+			xmlhttp.send();
+		}
+		var sites = [ {
+			"name" : "baidu",
+			"url" : "http://www.baidu.com/"
+		}, {
+			"name" : "google",
+			"url" : "http://www.google.com"
+		}, {
+			"name" : "bing",
+			"url" : "http://www.bing.com"
+		} ];
+		var search = document.getElementById("searchengine");
+		var innerHtml = "";
+		for (var i = 0; i < sites.length; i++) {
+			innerHtml = innerHtml + "<a href='" + sites[i].url + "'>"
+					+ sites[i].name + "</a><br>";
+		}
+		search.innerHTML = innerHtml;
+		var JSONObject = {
+			"name" : "菜鸟教程",
+			"url" : "www.runoob.com",
+			"slogan" : "学的不仅是技术，更是梦想！"
+		};
+		document.getElementById("jname").innerHTML = JSONObject.name
+		document.getElementById("jurl").innerHTML = JSONObject.url
+		document.getElementById("jslogan").innerHTML = JSONObject.slogan
+	</script>
+
+</body>
+</html>
