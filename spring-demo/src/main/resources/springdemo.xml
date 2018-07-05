@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:lang="http://www.springframework.org/schema/lang"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/lang
+		http://www.springframework.org/schema/lang/spring-lang.xsd">
+
+	<bean id="helloWorld"
+		class="com.example.springdemo.HelloWorldBean">
+	</bean>
+
+	<!-- <alias name="helloWorld" alias="hello" /> <bean id="clientService"
+		class="com.example.springdemo.ClientService" factory-method="createInstance"
+		/> <bean id="clientServiceLocator" factory-bean="serviceLocator" factory-method="createClientServiceInstance"
+		/> <bean id="serviceLocator" class="com.example.springdemo.DefaultServiceLocator
+		" /> <bean id="example" class="com.example.springdemo.ExampleBean"> <constructor-arg
+		type="int" value="7500000" /> <constructor-arg type="String" value="42" />
+		</bean> <bean id="indexExample" class="com.example.springdemo.ExampleBean">
+		<constructor-arg index="0" value="5700000" /> <constructor-arg index="1"
+		value="24" /> </bean> <bean id="nameExample" class="com.example.springdemo.ExampleBean">
+		<constructor-arg name="year" value="8888888" /> <constructor-arg name="ultimateAnswer"
+		value="666" /> </bean> <bean id="oneExample" class="com.example.springdemo.OneExampleBean">
+		<property name="i" value="111" /> <property name="anotherExample" ref="anotherExample"
+		/> <property name="yetAnothorExample" ref="yetAnothorExample" /> </bean>
+		<bean id="anotherExample" class="com.example.springdemo.AnotherExampleBean"
+		/> <bean id="yetAnothorExample" class="com.example.springdemo.YetAnotherExampleBean"
+		/> -->
+	<!-- <bean id="lifeCycleExampleBean" -->
+	<!-- class="com.example.springdemo.LifeCycleExampleBean" init-method="init" -->
+	<!-- destroy-method="cleanup" /> -->
+
+	<bean
+		class="com.example.springdemo.InstantiationTracingBeanPostProcessor" />
+</beans>
