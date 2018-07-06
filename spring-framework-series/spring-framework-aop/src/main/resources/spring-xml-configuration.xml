@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="businessTargetObject"
+		class="com.zyx.sfa.bo.BusinessTargetObject" />
+
+	<bean id="logBeforeTxn" class="com.zyx.sfa.profiler.LogBeforeTxn" />
+
+	<bean id="logResultsAfterTxn"
+		class="com.zyx.sfa.profiler.LogResultsAfterTxn" />
+
+	<bean id="logResultsAfterError"
+		class="com.zyx.sfa.profiler.LogResultsAfterError" />
+
+	<bean id="logAroundTxn" class="com.zyx.sfa.profiler.LogAroundTxn" />
+
+	<bean id="logAroundTxn2"
+		class="com.zyx.sfa.profiler.LogAroundTxn2" />
+
+	<bean id="simplePointcut"
+		class="org.springframework.aop.support.NameMatchMethodPointcut">
+		<property name="mappedName" value="sayHello" />
+	</bean>
+
+	<bean id="simpleAdvisor"
+		class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="pointcut" ref="simplePointcut" />
+		<property name="advice" ref="logBeforeTxn" />
+	</bean>
+	<bean id="regexAdvisor"
+		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<property name="patterns">
+			<list>
+				<value>.*Hello.*</value>
+			</list>
+		</property>
+		<property name="advice" ref="logAroundTxn" />
+	</bean>
+	<bean id="simpleServiceProxy"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="businessTargetObject" />
+		<property name="interceptorNames">
+			<list>
+				<value>simpleAdvisor</value>
+				<value>logResultsAfterTxn</value>
+				<value>logResultsAfterError</value>
+				<value>logAroundTxn2</value>
+				<value>regexAdvisor</value>
+			</list>
+		</property>
+	</bean>
+
+</beans>
