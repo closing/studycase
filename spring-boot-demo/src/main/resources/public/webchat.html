@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+	integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+	crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+	integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+	crossorigin="anonymous"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+	integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+	crossorigin="anonymous"></script>
+
+
+<style type="text/css">
+#msg {
+	height: 400px;
+	overflow-y: auto;
+}
+
+#userName {
+	width: 200px;
+}
+
+#logout {
+	display: none;
+}
+</style>
+<title>webSocket测试</title>
+</head>
+
+<body>
+	<div class="container">
+		<div class="page-header" id="tou">webSocket Chat Demo</div>
+		<p class="text-right" id="logout">
+			<button class="btn btn-danger" id="logout-btn">Exit</button>
+		</p>
+		<div class="well" id="msg"></div>
+		<div class="col-lg">
+			<div class="input-group">
+				<input type="text" class="form-control" placeholder="Send..."
+					id="message"> <span class="input-group-btn">
+					<button class="btn btn-default" type="button" id="send"
+						disabled="disabled">Send</button>
+				</span>
+			</div>
+			<div class="input-group">
+				<input id="userName" type="text" class="form-control"
+					name="userName" placeholder="userName" />
+				<button class="btn btn-default" type="button" id="connection-btn">Connect</button>
+			</div>
+			<!-- /input-group -->
+		</div>
+		<!-- /.col-lg-6 -->
+	</div>
+	<!-- /.row -->
+	</div>
+	<script type="text/javascript">
+		$(function() {
+			var websocket;
+			$("#connection-btn").bind("click", function() {
+				var userName = $("#userName").val();
+				if (userName == null || userName == "") {
+					alert("Input Your UserName");
+					return;
+				}
+				connection(userName);
+			});
+
+			function connection(userName) {
+				var host = window.location.host;
+				if ('WebSocket' in window) {
+					websocket = new WebSocket("ws://" + host
+							+ "/webSocketServer/" + userName);
+				} else if ('MozWebSocket' in window) {
+					websocket = new MozWebSocket("ws://" + host
+							+ "/webSocketServer/" + userName);
+				}
+				websocket.onopen = function(evnt) {
+					$("#tou").html("Connected Successfully!")
+					$("#send").prop("disabled", "");
+					$("#connection-btn").prop("disabled", "disabled");
+					$("#logout").show();
+				};
+				websocket.onmessage = function(evnt) {
+					$("#msg").html($("#msg").html() + "<br/>" + evnt.data);
+				};
+				websocket.onerror = function(evnt) {
+					$("#tou").html("ERROR!")
+				};
+				websocket.onclose = function(evnt) {
+					$("#tou").html("Connection stopped!");
+					$("#send").prop("disabled", "disabled");
+					$("#connection-btn").prop("disabled", "");
+					$("#logout").hide();
+				}
+			}
+
+			function send() {
+				if (websocket != null) {
+					var $message = $("#message");
+					var data = $message.val();
+					if (data == null || data == "") {
+						return;
+					}
+					websocket.send(data);
+					$message.val("");
+				} else {
+					alert('No connection.');
+				}
+			}
+
+			$('#send').bind('click', function() {
+				send();
+			});
+
+			$(document).on("keypress", function(event) {
+				if (event.keyCode == "13") {
+					send();
+				}
+			});
+
+			$("#logout-btn").on("click", function() {
+				websocket.close(); //
+			});
+		});
+	</script>
+</body>
+
+</html>
